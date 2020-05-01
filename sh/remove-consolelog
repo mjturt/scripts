@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+for i in $(find ./ -name "*.js"); do
+    sed -E 's/console\.(log|warn|error|assert..timeEnd)\((.*)\);?//g' $i >${i}.copy && mv ${i}.copy $i
+done

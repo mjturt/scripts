@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+if command -v "$1"; then
+    echo "Executable of that name alredy exists in \$PATH"
+else
+    if [[ "$2" == "-h" ]]; then
+        printf "#!/usr/bin/env bash" >"$1" && chmod 755 "$1" && nvim + "$1" && chmod 755 "$1"
+    else
+        printf "#!/usr/bin/env bash" >~/sh/"$1" && chmod 755 ~/sh/"$1" && nvim + ~/sh/"$1" && chmod 755 ~/sh/"$1"
+    fi
+fi

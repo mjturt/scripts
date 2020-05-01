@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# screenshot and move to cloud
+scrot 'screenshot_%d-%m-%Y_%H%M%S_$wx$h.png' -e 'mv $f ~/cloud/images/screenshots/'
