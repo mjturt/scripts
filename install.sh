@@ -22,6 +22,7 @@ LOGS=${BACKUP}/scripts-logs-$(date +%H%M%S).log
 SH_PATH=${HOME}/sh
 STATUS_PATH=${HOME}/.statusscripts
 BIN_PATH=${HOME}/bin
+ASSETS_PATH=${HOME}/.assets
 SCRIPTS=$(pwd)
 
 #┏━━━━━━━━━━━┓
@@ -39,6 +40,7 @@ installScripts() {
     installSh
     installStatus
     installBin
+    installAssets
 }
 
 installSh() {
@@ -66,6 +68,15 @@ installBin() {
         rm -v "$BIN_PATH" >> "$LOGS"
     fi
     ln -v -s "${SCRIPTS}"/bin "$BIN_PATH" >> "$LOGS"
+}
+
+installAssets() {
+    if [[ -e "$ASSETS_PATH" ]]; then
+        mv -v "$ASSETS_PATH" "$BACKUP" >> "$LOGS"
+    elif [[ -L "$ASSETS_PATH" ]]; then
+        rm -v "$ASSETS_PATH" >> "$LOGS"
+    fi
+    ln -v -s "${SCRIPTS}"/assets "$ASSETS_PATH" >> "$LOGS"
 }
 
 helps() {
