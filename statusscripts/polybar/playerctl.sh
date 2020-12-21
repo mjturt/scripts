@@ -1,21 +1,39 @@
 #!/bin/sh
+# mjturt
 
-player_status=$(playerctl --player=spotify status 2>/dev/null)
+PLAYER="spotify"
+ARTIST_MAX_LENGTH=15
+TITLE_MAX_LENGTH=15
 
-if [ "$1" = "--show-info" ]; then
-    if [ "$player_status" = "Playing" ]; then
-        echo "%{F#00ff00}%{F-} $(playerctl --player=spotify metadata artist 2>/dev/null | cut -c 1-20) - $(playerctl --player=spotify metadata title 2>/dev/null | cut -c 1-20)"
-    elif [ "$player_status" = "Paused" ]; then
-        echo "%{F#f57800}%{F-} $(playerctl --player=spotify metadata artist 2>/dev/null | cut -c 1-20) - $(playerctl --player=spotify metadata title 2>/dev/null | cut -c 1-20)"
-    else
-        echo "%{F#ff0000}%{F-}"
-    fi
+PLAYER_STATUS="$(playerctl --player=$PLAYER status 2> /dev/null)"
+GREEN="$(polybar -l error --dump=green colors)"
+YELLOW="$(polybar -l error --dump=yellow colors)"
+RED="$(polybar -l error --dump=red colors)"
+
+if [ "$1" = "--info" ]; then
+  INFO_STRING="$(playerctl --player=$PLAYER metadata artist 2> /dev/null | cut -c 1-$ARTIST_MAX_LENGTH) - $(playerctl --player=$PLAYER metadata title 2> /dev/null | cut -c 1-$TITLE_MAX_LENGTH)"
+  if [ "$PLAYER_STATUS" = "Playing" ]; then
+    PREFIX="%{F$GREEN}%{F-}"
+  elif [ "$PLAYER_STATUS" = "Paused" ]; then
+    PREFIX="%{F$YELLOW}%{F-}"
+  else
+    PREFIX="%{F$RED}%{F-}"
+  fi
+  echo "$PREFIX $INFO_STRING"
+elif [ "$1" = "--no-info" ]; then
+  if [ "$PLAYER_STATUS" = "Playing" ]; then
+    echo "%{F$GREEN}%{F-}"
+  elif [ "$PLAYER_STATUS" = "Paused" ]; then
+    echo "%{F$YELLOW}%{F-}"
+  else
+    echo "%{F$RED}%{F-}"
+  fi
+elif [ "$1" = "--previous" ]; then
+  playerctl --player="$PLAYER" previous 
+elif [ "$1" = "--next" ]; then
+  playerctl --player="$PLAYER" next 
+elif [ "$1" = "--play" ]; then
+  playerctl --player="$PLAYER" play-pause 
 else
-    if [ "$player_status" = "Playing" ]; then
-        echo "%{F#00ff00}%{F-}"
-    elif [ "$player_status" = "Paused" ]; then
-        echo "%{F#f57800}%{F-}"
-    else
-        echo "%{F#ff0000}%{F-}"
-    fi
+  echo "Command needed"
 fi

@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 
 killall -q polybar
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+while pgrep -u $UID -x polybar > /dev/null; do sleep 1; done
 
 if [ "$(hostname)" = "yoga" ]; then
-    polybar i3_yoga_m1 &
-    polybar i3_yoga_m2 &
-    polybar i3_yoga_m3 &
+  BAR="i3_yoga"
 elif [ "$(hostname)" = "r5" ]; then
-    polybar i3_r5_m1 &
-    polybar i3_r5_m2 &
+  BAR="i3_r5"
 elif [ "$(hostname)" = "tp" ]; then
-    polybar dwmtp &
+  BAR="i3_tp"
+fi
+
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload "$BAR" &
+  done
+else
+  polybar --reload "$BAR" &
 fi

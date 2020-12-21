@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # mjturt
 
+GREEN="$(polybar -l error --dump=green colors)"
+YELLOW="$(polybar -l error --dump=yellow colors)"
+RED="$(polybar -l error --dump=red colors)"
+
 if [ "$1" == "--ryzen" ]; then
     TEMP=$(sensors | grep "Tctl" | awk '{print $2}' | tr -d "+°C")
 else
@@ -8,11 +12,11 @@ else
 fi
 
 if (($(echo "$TEMP < 60" | bc -l))); then
-    SYMBOL="%{F#11DF00}%{F-}"
+    SYMBOL="%{F$GREEN}%{F-}"
 elif (($(echo "$TEMP < 75" | bc -l))); then
-    SYMBOL="%{F#f57800}%{F-}"
+    SYMBOL="%{F$YELLOW}%{F-}"
 else
-    SYMBOL="%{F#ff0000}%{F-}"
+    SYMBOL="%{F$RED}%{F-}"
 fi
 
 echo -e "$SYMBOL $TEMP°C"
