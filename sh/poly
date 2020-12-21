@@ -13,7 +13,11 @@ fi
 
 if type "xrandr"; then
   for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload "$BAR" &
+    if [[ "$BAR" == "i3_yoga" ]] && [[ "$m" == "DP-1" ]]; then
+      MONITOR=$m polybar --reload "i3_yoga_2" &
+    else
+      MONITOR=$m polybar --reload "$BAR" &
+    fi
   done
 else
   polybar --reload "$BAR" &
